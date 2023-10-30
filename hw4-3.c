@@ -24,19 +24,21 @@ int main() {
         }
     }
 
-    int drivers = 1; // 最少司机数量
+    int drivers = 0; // 最少司机数量
     int driver_end_time[100]; // 司机的返回时间数组
-    driver_end_time[0] = d[0];
 
-    // 打印输出
-    for (int i = 1; i < n; i++) {
-        if (s[i] > driver_end_time[drivers - 1]) {
-            // 可以派遣同一位司机
-            driver_end_time[drivers - 1] = d[i];
-        } else {
-            // 需要新增司机
+    for (int i = 0; i < n; i++) {
+        int driver_found = 0;
+        for (int j = 0; j < drivers; j++) {
+            if (s[i] >= driver_end_time[j]) {
+                driver_end_time[j] = d[i];
+                driver_found = 1;
+                break;
+            }
+        }
+        if (!driver_found) {
+            driver_end_time[drivers] = d[i];
             drivers++;
-            driver_end_time[drivers - 1] = d[i];
         }
     }
 
@@ -46,10 +48,12 @@ int main() {
     // 输出每位司机的时间表
     for (int i = 0; i < drivers; i++) {
         int driver_start_time = s[0];
-        printf("%d", driver_start_time);
         for (int j = 0; j < n; j++) {
             if (s[j] >= driver_start_time && d[j] <= driver_end_time[i]) {
-                printf(" %d", d[j]);
+                if (driver_start_time != s[j]) {
+                    printf(" ");
+                }
+                printf("%d %d", s[j], d[j]);
                 driver_start_time = d[j];
             }
         }
